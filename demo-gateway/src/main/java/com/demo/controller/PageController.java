@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping( "/" )
-public class HelloController {
+public class PageController {
 
-    Logger logger = LogManager.getLogger(HelloController.class);
+    Logger logger = LogManager.getLogger(PageController.class);
 
     @RequestMapping(value = {"/sayhello"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
     @ResponseBody
