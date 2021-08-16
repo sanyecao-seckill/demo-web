@@ -19,4 +19,9 @@ public class HelloController {
         return "seckill web is success!";
     }
 
+    @RequestMapping(value = {"/index"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    public String index() {
+        return "/settlement";
+    }
+
 }

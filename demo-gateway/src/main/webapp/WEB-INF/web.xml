@@ -32,14 +32,34 @@
       <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+<!--    <servlet-mapping>-->
+<!--      <servlet-name>jsp</servlet-name>-->
+<!--      <url-pattern>*.jsp</url-pattern>-->
+<!--    </servlet-mapping>-->
+<!--    <servlet-mapping>-->
+<!--      <servlet-name>jsp</servlet-name>-->
+<!--      <url-pattern>*.jspx</url-pattern>-->
+<!--    </servlet-mapping>-->
+
     <servlet-mapping>
-      <servlet-name>jsp</servlet-name>
-      <url-pattern>*.jsp</url-pattern>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.jpg</url-pattern>
+    <url-pattern>*.png</url-pattern>
+    <url-pattern>*.gif</url-pattern>
+    <url-pattern>*.css</url-pattern>
+    <url-pattern>*.js</url-pattern>
+    <url-pattern>*.swf</url-pattern>
+    <url-pattern>*.pdf</url-pattern>
+    <url-pattern>*.java</url-pattern>
+    <url-pattern>*.class</url-pattern>
+    <url-pattern>*.xls</url-pattern>
+    <url-pattern>*.xlsx</url-pattern>
+    <url-pattern>*.et</url-pattern>
+    <url-pattern>*.vm</url-pattern>
+    <url-pattern>*.html</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>jsp</servlet-name>
-      <url-pattern>*.jspx</url-pattern>
-    </servlet-mapping>
+
+
 
     <filter>
       <filter-name>characterEncodingFilter</filter-name>

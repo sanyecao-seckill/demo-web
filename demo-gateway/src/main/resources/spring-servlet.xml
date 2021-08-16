@@ -13,5 +13,44 @@
 	<mvc:annotation-driven />
 	<mvc:default-servlet-handler />
 	<context:component-scan base-package="com.demo.controller" />
+
+	<bean id="freemarkerConfig"
+		  class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/html/" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">0</prop>
+				<prop key="default_encoding">UTF-8</prop>
+				<prop key="number_format">0.##########</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="classic_compatible">true</prop>
+				<prop key="template_exception_handler">ignore</prop>
+			</props>
+		</property>
+	</bean>
+
+<!--	&lt;!&ndash; 设置freeMarker的配置文件路径 &ndash;&gt;-->
+<!--	<bean id="freemarkerConfiguration"-->
+<!--		  class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+<!--		&lt;!&ndash;注释掉的下方代码是指引freemarker的基本信息的配置位置，因为已经将配置信息移到了上面 freemarkerSettings 下，所以这里就没必要存在了，不注释也不会有问题的 &ndash;&gt;-->
+<!--		&lt;!&ndash;<property name="location" value="classpath:/WEB-INF/config/freemarker.properties" />&ndash;&gt;-->
+<!--	</bean>-->
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="exposeRequestAttributes" value="true" />
+		<property name="exposeSessionAttributes" value="true" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+		<property name="cache" value="true" />
+		<property name="suffix" value=".html"/>
+		<property name="contentType" value="text/html; charset=UTF-8"/>
+	</bean>
+
+<!--	<bean  class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+<!--		<property name="order" value="10"></property>-->
+<!--		<property name="prefix" value="/html"></property>-->
+<!--		<property name="suffix" value=".html"></property>-->
+<!--		<property name="contentType" value="text/html"></property>-->
+<!--	</bean>-->
+
 	
 </beans>
