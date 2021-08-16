@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 配置LoggerConfig，即Appenders的日志级别为WARN -->
+<Configuration status="WARN">
+    <!-- Appenders支持配置多个Appender，支持向不同的目标输送日志，本例为配置向控制台输出 -->
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy/MM/dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+    </Appenders>
+    <!-- Loggers支持配置多个Logger，可引用不同的目标Appender，也可根据业务需求定制特定要求的Appender -->
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
