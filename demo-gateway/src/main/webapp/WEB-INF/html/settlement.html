@@ -1,16 +1,112 @@
-<script src="//unpkg.com/vue/dist/vue.js"></script>
-<script src="//unpkg.com/element-ui@2.15.5/lib/index.js"></script>
-<div id="app">
-    <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="活动名称">
-            <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="即时配送">
-            <el-switch v-model="form.delivery"></el-switch>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">立即创建</el-button>
-            <el-button>取消</el-button>
-        </el-form-item>
-    </el-form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>填写订单</title>
+    <style type="text/css">
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        form{
+            width: 600px;
+            margin:20px auto;
+        }
+        form>fieldset{
+            padding: 10px;
+        }
+        form>fieldset>meter,
+        form>fieldset>input{
+            width: 100%;
+            height:40px;
+            line-height: 40px;
+            margin:10px auto;
+            border-radius: 4px;
+            font-size: 16px;
+            padding-left: 5px;
+            box-sizing: border-box;
+        }
+        form>fieldset>div{
+            width: 100%;
+            height:40px;
+            line-height: 40px;
+            margin:10px auto;
+            border-radius: 4px;
+            font-size: 16px;
+            padding-left: 5px;
+            box-sizing: border-box;
+        }
+
+    </style>
+</head>
+<body>
+
+<div>
+    <form action=""  method="">
+        <img border="1" src="/images/product.jpg"  width="600" height="500">
+        <p>荣耀手机特价998，性价比高，最优的选择</p>
+        <br>
+        <p style="color:red;">注意：本商品单次限购1件</p>
+        <br>
+
+        <fieldset>
+            <legend>结算信息</legend>
+            <label for="buyNum">购买数量：</label>
+            <input type="number" name="buyNum" id="buyNum" value="1" maxlength="2">
+            <label for="price">价格：</label>
+            <input type="text" name="price" id="price" placeholder="998" disabled>
+            <label >支付方式：</label>
+            <div><input type="radio" name="payType" checked="true">在线支付
+                <input type="radio" name="payType" >货到付款</div>
+            <label for="address">收货地址：</label>
+            <input type="text" name="address" id="address" placeholder="请输入收货地址">
+
+            <input type="submit" name="" style="margin-top: 200px;">
+
+            <input type="hidden" id="limitNum" value="2">
+        </fieldset>
+
+    </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+      var productId = getParameterByName('productId');
+      var limitNum = getParameterByName('productId');
+
+      $.post("/settlement/initData",
+      {
+        productId:productId,
+        buyNum:$("#buyNum").val()
+      },
+      function(data,status){
+        if(!status){
+          alert("数据加载异常")
+          return;
+        }
+
+      });
+
+    });
+
+     $("#buyNum").bind('input propertychange', function() {
+        var limitNum = $("#limitNum").val();
+        if($(this).val()>limitNum){
+          alert("限购"+limitNum+"件！")
+          $("#buyNum").val(limitNum);
+        }
+        return ;
+     });
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+</script>
+</body>
+</html>
