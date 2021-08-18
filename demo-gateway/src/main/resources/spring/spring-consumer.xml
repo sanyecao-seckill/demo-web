@@ -13,4 +13,10 @@
 
     <dubbo:reference id="activityExportService" interface="com.demo.support.export.ActivityExportService"
                      url="dubbo://localhost:20880" check="false"/>
+
+    <dubbo:reference id="productExportService" interface="com.demo.support.export.ProductExportService"
+                     url="dubbo://localhost:20880" check="false"/>
+
+    <dubbo:reference id="settlementExportService" interface="com.demo.support.export.SettlementExportService"
+                     url="dubbo://localhost:20880" check="false"/>
 </beans>

@@ -42,10 +42,10 @@
 
 <div>
     <form action=""  method="">
-        <img border="1" src="/images/product.jpg"  width="600" height="500">
-        <p>荣耀手机特价998，性价比高，最优的选择</p>
+        <img border="1" src="/images/product.jpg"  width="600" height="500" id="productPictureUrl">
+        <p id="activityName">荣耀手机特价998，性价比高，最优的选择</p>
         <br>
-        <p style="color:red;">注意：本商品单次限购1件</p>
+        <p style="color:red;" id="mark">1件</p>
         <br>
 
         <fieldset>
@@ -55,14 +55,16 @@
             <label for="price">价格：</label>
             <input type="text" name="price" id="price" placeholder="998" disabled>
             <label >支付方式：</label>
-            <div><input type="radio" name="payType" checked="true">在线支付
-                <input type="radio" name="payType" >货到付款</div>
+            <div><input type="radio" name="payType" value="1" checked="true">在线支付
+                <input type="radio" name="payType" value="2">货到付款</div>
             <label for="address">收货地址：</label>
             <input type="text" name="address" id="address" placeholder="请输入收货地址">
+            <label for="address">总金额：</label>
+            <input type="text" name="totalPrice" id="totalPrice" style="color:red;">
 
-            <input type="submit" name="" style="margin-top: 200px;">
+            <input type="button" name="" style="margin-top: 80px;" onclick="submitOrder()" value="提交订单">
 
-            <input type="hidden" id="limitNum" value="2">
+            <input type="hidden" id="limitNum" value="1">
         </fieldset>
 
     </form>
@@ -71,33 +73,75 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
-
       var productId = getParameterByName('productId');
-      var limitNum = getParameterByName('productId');
-
-      $.post("/settlement/initData",
-      {
-        productId:productId,
-        buyNum:$("#buyNum").val()
-      },
-      function(data,status){
-        if(!status){
-          alert("数据加载异常")
-          return;
-        }
-
-      });
-
+      initData(productId,'1');
     });
 
-     $("#buyNum").bind('input propertychange', function() {
+    $("#buyNum").bind('input propertychange', function() {
         var limitNum = $("#limitNum").val();
-        if($(this).val()>limitNum){
+        var buyNum = $(this).val();
+        if(buyNum == null || buyNum==''){
+          return;
+        }
+        if(buyNum>limitNum){
           alert("限购"+limitNum+"件！")
           $("#buyNum").val(limitNum);
+          return ;
         }
-        return ;
-     });
+
+        var productId = getParameterByName('productId');
+        initData(productId,$("#buyNum").val());
+    });
+
+    function initData(productId,buyNum){
+       $.post("/settlement/initData",
+          {
+            'productId':productId,
+            'buyNum':buyNum
+          },
+          function(data,status){
+            if(!status){
+              alert("数据加载异常")
+              return;
+            }
+
+            $("#price").val(data.productPrice);
+            $("#totalPrice").val(data.totalPrice);
+            $("#productPictureUrl").attr("src",data.productPictureUrl);
+            $("#address").val(data.address);
+            $("#activityName").html(data.activityName);
+            $("#limitNum").val(data.limitNum);
+            $("#mark").html('注意：本商品单次限购'+data.limitNum+'件');
+
+          },'json');
+    }
+
+    function submitOrder(){
+      var productId = getParameterByName('productId');
+      var buyNum = $("#buyNum").val();
+      var address = $("#address").val();
+      var payType=$("[name='payType']").filter(":checked").attr("value");
+      $.post("/settlement/submitOrder",
+          {
+            'productId':productId,
+            'buyNum':buyNum,
+            'address':address,
+            'payType':payType
+          },
+          function(data,status){
+            if(!status){
+              alert("提单失败，请重新尝试");
+              return;
+            }
+            if('000000'!=data.code){
+              alert(data.message);
+              return;
+            }
+
+            window.location.href=data.payPageUrl;
+
+      },'json');
+    }
 
     function getParameterByName(name, url = window.location.href) {
         name = name.replace(/[\[\]]/g, '\\$&');

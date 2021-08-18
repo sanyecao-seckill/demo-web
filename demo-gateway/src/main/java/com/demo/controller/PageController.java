@@ -24,4 +24,9 @@ public class PageController {
         return "/settlement";
     }
 
+    @RequestMapping(value = {"/payPage"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    public String payPage() {
+        return "/payment";
+    }
+
 }
