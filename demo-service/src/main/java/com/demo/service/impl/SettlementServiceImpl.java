@@ -6,12 +6,8 @@ import com.demo.model.SettlementInitDTO;
 import com.demo.model.SettlementSubmitDTO;
 import com.demo.service.SettlementService;
 import com.demo.support.constant.ResultCodeConstant;
-import com.demo.support.dto.ProductInfoDTO;
-import com.demo.support.dto.Result;
-import com.demo.support.dto.SeckillActivityDTO;
-import com.demo.support.dto.SettlementOrderDTO;
+import com.demo.support.dto.*;
 import com.demo.support.export.ActivityExportService;
-import com.demo.support.export.ProductExportService;
 import com.demo.support.export.SettlementExportService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class SettlementServiceImpl implements SettlementService {
@@ -30,9 +26,6 @@ public class SettlementServiceImpl implements SettlementService {
 
     @Autowired
     ActivityExportService activityExportService;
-
-    @Autowired
-    ProductExportService productExportService;
 
     @Autowired
     SettlementExportService settlementExportService;
@@ -67,32 +60,35 @@ public class SettlementServiceImpl implements SettlementService {
             throw new BizException("不在活动有效期");
         }
 
-        //2.设置活动相关信息
+        //2.设置活动商品相关信息
         initDTO.setLimitNum(String.valueOf(activityDTO.getLimitNum()));
         initDTO.setActivityName(activityDTO.getActivityName());
+        initDTO.setProductPrice(activityDTO.getActivityPrice().toPlainString());
+        initDTO.setProductPictureUrl(activityDTO.getActivityPictureUrl());
         initDTO.setProductId(productId);
 
-        //3.设置商品信息
-        Result<ProductInfoDTO> productResult = productExportService.queryProduct(productId);
-        logger.info("结算页初始化-查询商品出参：" + JSON.toJSONString(activityResult));
+        //3.调用初始化接口
+        SettlementDataRequestDTO requestDTO = new SettlementDataRequestDTO();
+        requestDTO.setUserId(UUID.randomUUID().toString());
+        requestDTO.setBuyNum(Integer.parseInt(buyNum));
+        requestDTO.setProductId(productId);
 
-        if(productResult == null){
+        Result<SettlementDataDTO> dataDTOResult = settlementExportService.settlementData(requestDTO);
+        logger.info("结算页初始化-初始数据出参：" + JSON.toJSONString(activityResult));
+        if(dataDTOResult == null){
             throw new BizException("系统异常");
         }
-        if(!StringUtils.endsWithIgnoreCase(productResult.getCode(), ResultCodeConstant.SUCCESS)){
-            throw new BizException(productResult.getMessage());
+        if(!StringUtils.endsWithIgnoreCase(dataDTOResult.getCode(), ResultCodeConstant.SUCCESS)){
+            throw new BizException(dataDTOResult.getMessage());
         }
-        ProductInfoDTO productInfo = productResult.getData();
-        initDTO.setProductPrice(productInfo.getProductPrice().toPlainString());
-        initDTO.setProductPictureUrl(productInfo.getPictureUrl());
+        SettlementDataDTO settlementDataDTO = dataDTOResult.getData();
 
-        //4.计算价格
-        BigDecimal totalPrice = productInfo.getProductPrice().multiply(new BigDecimal(buyNum));
-        initDTO.setTotalPrice(totalPrice.toPlainString());
+        //4.设置结算元素
+        initDTO.setTotalPrice(settlementDataDTO.getTotalPrice().toPlainString());
         //5.获取结算相关的，获取或计算价格，支付方式，配送方式，要调用相关的接口来组装对应的信息
-        initDTO.setPayType("1");
+        initDTO.setPayType(String.valueOf(settlementDataDTO.getPayType()));
         //6.用户维度数据，包括地址、发票等，如果支持虚拟资产，像优惠券、红包等，还要调用相关的接口来组装对应的信息
-        initDTO.setAddress("");
+        initDTO.setAddress(settlementDataDTO.getAddress());
 
         return initDTO;
     }
@@ -115,13 +111,13 @@ public class SettlementServiceImpl implements SettlementService {
         }
         SeckillActivityDTO activityDTO = activityResult.getData();
 
-        String buyNum = requestDTO.getBuyNum();
+        Integer buyNum = requestDTO.getBuyNum();
         //1.1校验单次限购
-        if(Integer.parseInt(buyNum)>activityDTO.getLimitNum()){
+        if(buyNum>activityDTO.getLimitNum()){
             throw new BizException("超过了单次限购数量");
         }
         //1.2校验库存
-        if(Integer.parseInt(buyNum)>activityDTO.getStockNum()){
+        if(buyNum>activityDTO.getStockNum()){
             throw new BizException("商品已售完");
         }
         //1.3校验活动有效期
@@ -133,6 +129,7 @@ public class SettlementServiceImpl implements SettlementService {
         //2.风控
 
         //3.提交订单
+        requestDTO.setUserId(UUID.randomUUID().toString());
         Result<String> orderResult = settlementExportService.submitOrder(requestDTO);
         if(orderResult == null){
             throw new BizException("系统异常");

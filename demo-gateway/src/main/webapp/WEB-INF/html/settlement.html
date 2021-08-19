@@ -50,19 +50,32 @@
 
         <fieldset>
             <legend>结算信息</legend>
-            <label for="buyNum">购买数量：</label>
-            <input type="number" name="buyNum" id="buyNum" value="1" maxlength="2">
-            <label for="price">价格：</label>
-            <input type="text" name="price" id="price" placeholder="998" disabled>
-            <label >支付方式：</label>
-            <div><input type="radio" name="payType" value="1" checked="true">在线支付
-                <input type="radio" name="payType" value="2">货到付款</div>
-            <label for="address">收货地址：</label>
-            <input type="text" name="address" id="address" placeholder="请输入收货地址">
-            <label for="address">总金额：</label>
-            <input type="text" name="totalPrice" id="totalPrice" style="color:red;">
 
-            <input type="button" name="" style="margin-top: 80px;" onclick="submitOrder()" value="提交订单">
+            <div>
+            <label id="price">价格：</label>
+            </div>
+
+            <div>
+                <label for="buyNum">购买数量：</label>
+                <input type="number" name="buyNum" id="buyNum" value="1" maxlength="2" style="width:50px;;height:25px;">
+            </div>
+
+            <div>
+                <label >支付方式：</label>
+                <input type="radio" name="payType" value="1" checked="true"style="width:30px;">在线支付
+                <input type="radio" name="payType" value="2"style="width:30px;">货到付款
+            </div>
+
+            <div>
+                <label for="address">收货地址：</label>
+                <input type="text" name="address" id="address" placeholder="请输入收货地址" style="width:70%;height:25px;">
+            </div>
+
+            <div>
+                <label for="address" style="color:red;" id="totalPrice">总金额：</label>
+            </div>
+
+            <input type="button" name="" style="margin-top: 60px;color:blue;" onclick="submitOrder()" value="提交订单">
 
             <input type="hidden" id="limitNum" value="1">
         </fieldset>
@@ -105,8 +118,8 @@
               return;
             }
 
-            $("#price").val(data.productPrice);
-            $("#totalPrice").val(data.totalPrice);
+            $("#price").html('价格：'+data.productPrice);
+            $("#totalPrice").html('总金额：'+data.totalPrice);
             $("#productPictureUrl").attr("src",data.productPictureUrl);
             $("#address").val(data.address);
             $("#activityName").html(data.activityName);

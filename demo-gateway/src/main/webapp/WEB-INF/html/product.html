@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>填写订单</title>
+    <style type="text/css">
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        form{
+            width: 600px;
+            margin:20px auto;
+        }
+        form>fieldset{
+            padding: 10px;
+        }
+        form>fieldset>meter,
+        form>fieldset>input{
+            width: 100%;
+            height:40px;
+            line-height: 40px;
+            margin:10px auto;
+            border-radius: 4px;
+            font-size: 16px;
+            padding-left: 5px;
+            box-sizing: border-box;
+        }
+        form>fieldset>div{
+            width: 100%;
+            height:40px;
+            line-height: 40px;
+            margin:10px auto;
+            border-radius: 4px;
+            font-size: 16px;
+            padding-left: 5px;
+            box-sizing: border-box;
+        }
+
+    </style>
+</head>
+<body>
+
+<div>
+    <form action=""  method="">
+        <img border="1" src="/images/product.jpg"  width="600" height="500" id="productPictureUrl">
+        <p id="productName"></p>
+        <br>
+
+        <fieldset>
+            <legend>商品信息</legend>
+            <label for="price" id="price">价格：</label>
+<!--            <input type="text"  id="price" placeholder="998" disabled>-->
+
+            <input type="button" id="buttonE" style="margin-top: 80px;" onclick="buyNow()" value="立即购买" disabled>
+
+        </fieldset>
+
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+      var productId = getParameterByName('productId');
+      initData(productId);
+    });
+
+    function initData(productId){
+       $.post("/product/detail",
+          {
+            'productId':productId
+          },
+          function(data,status){
+            if(!status){
+              alert("数据加载异常")
+              return;
+            }
+
+            $("#price").append(data.productPrice);
+            $("#productPictureUrl").attr("src",data.productPictureUrl);
+            $("#productName").html(data.productName);
+
+            if(data.isAvailable == 1){
+              $("#buttonE").removeAttr("disabled");
+              $("#buttonE").val("立即抢购");
+              $("#buttonE").attr("style","color:blue;margin-top: 80px;");
+            }
+
+          },'json');
+    }
+
+    function buyNow(){
+      var productId = getParameterByName('productId');
+      window.location.href="http://localhost:8080/settlement?productId="+productId;
+    }
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+</script>
+</body>
+</html>

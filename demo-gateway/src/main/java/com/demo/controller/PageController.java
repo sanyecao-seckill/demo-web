@@ -21,12 +21,17 @@ public class PageController {
 
     @RequestMapping(value = {"/index"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
     public String index() {
-        return "/settlement";
+        return "/product";
     }
 
     @RequestMapping(value = {"/payPage"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
     public String payPage() {
         return "/payment";
+    }
+
+    @RequestMapping(value = {"/settlement"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    public String settlement() {
+        return "/settlement";
     }
 
 }
