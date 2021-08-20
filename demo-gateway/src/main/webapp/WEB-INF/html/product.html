@@ -89,7 +89,7 @@
     }
 
     function queryActivity(productId){
-      $.post("/activity/query",
+      $.post("http://localhost:7081/activity/query",
           {
             'productId':productId
           },
@@ -113,7 +113,7 @@
 
     function buyNow(){
       var productId = getParameterByName('productId');
-      window.location.href="http://localhost:8080/settlement/page?productId="+productId;
+      window.location.href="http://localhost:7081/settlement/page?productId="+productId;
     }
 
     function getParameterByName(name, url = window.location.href) {
