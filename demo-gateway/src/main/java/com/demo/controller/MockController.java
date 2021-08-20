@@ -1,5 +1,7 @@
 package com.demo.controller;
 
+import com.demo.model.ActivityDescDTO;
+import com.demo.model.ProductDescDTO;
 import com.demo.model.ProductDetailDTO;
 import com.demo.support.constant.ResultCodeConstant;
 import com.demo.support.dto.ProductInfoDTO;
@@ -10,6 +12,7 @@ import com.demo.support.export.ProductExportService;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,67 +61,76 @@ public class MockController {
             calendar.setTime(now);
             calendar.add(Calendar.DAY_OF_MONTH,2);
             activityDTO.setActivityStart(now);
-            activityDTO.setActivityStart(calendar.getTime());
+            activityDTO.setActivityEnd(calendar.getTime());
 
             Result<Integer> result = activityExportService.createActivity(activityDTO);
             if(StringUtils.isEquals(result.getCode(), ResultCodeConstant.SUCCESS)){
                 return "创建活动成功!";
+            }else{
+                return result.getMessage();
             }
         }catch (Exception e){
             logger.error(e);
         }
-        return "create seckill activity fail!";
+        return "创建活动失败!";
     }
 
 
-    @RequestMapping(value = {"/activityDesc"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = {"/activityDescData"}, method = {RequestMethod.POST,RequestMethod.GET} )
     @ResponseBody
-    public String activityDesc(String productId) {
+    public ActivityDescDTO activityDescData(String productId) {
         try{
             Result<SeckillActivityDTO> result = activityExportService.queryActivityByCondition(productId,null);
             if(result == null || result.getData() == null){
-                return "查询活动信息失败!";
+                return null;
             }
+            ActivityDescDTO descDTO = new ActivityDescDTO();
             SeckillActivityDTO activityDTO = result.getData();
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("活动名称：").append(activityDTO.getActivityName()).append("\r\n");
-            stringBuilder.append("商品编号：").append(activityDTO.getProductId()).append("\r\n");
-            stringBuilder.append("活动价格：").append(activityDTO.getProductId()).append("\r\n");
-            stringBuilder.append("活动库存：").append(activityDTO.getStockNum()).append("\r\n");
-            stringBuilder.append("单次限购：").append(activityDTO.getLimitNum()).append("\r\n");
+            BeanUtils.copyProperties(activityDTO,descDTO);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            stringBuilder.append("开始时间：").append(sf.format(activityDTO.getActivityStart())).append("\r\n");
-            stringBuilder.append("结束时间：").append(sf.format(activityDTO.getActivityEnd())).append("\r\n");
 
-            stringBuilder.toString();
+            descDTO.setActivityStartStr(sf.format(activityDTO.getActivityStart()));
+            descDTO.setActivityEndStr(sf.format(activityDTO.getActivityEnd()));
+
+            Integer status = activityDTO.getStatus();
+            String statusDesc="";
+            if(status==0){
+                statusDesc="未开始";
+            }else if(status==1){
+                statusDesc="进行中";
+            }else {
+                statusDesc="已结束";
+            }
+            descDTO.setStatusStr(statusDesc);
+
+            return descDTO;
         }catch (Exception e){
-            logger.error(e);
+            logger.error("查询活动信息异常",e);
         }
-        return "查询活动信息失败!";
+
+        return null;
     }
 
-    @RequestMapping(value = {"/productDesc"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = {"/productDescData"}, method = {RequestMethod.POST,RequestMethod.GET} )
     @ResponseBody
-    public String productDesc(String productId) {
+    public ProductDescDTO productDescData(String productId) {
         try{
             Result<ProductInfoDTO> productInfoDTOResult = productExportService.queryProduct(productId);
 
             if(productInfoDTOResult == null || productInfoDTOResult.getData() == null){
-                return "查询活动信息失败";
+                return null;
             }
 
+            ProductDescDTO descDTO = new ProductDescDTO();
             ProductInfoDTO productInfo = productInfoDTOResult.getData();
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("商品名称：").append(productInfo.getProductName()).append("\r\n");
-            stringBuilder.append("商品编号：").append(productId).append("\r\n");
-            stringBuilder.append("商品价格：").append(productInfo.getProductPrice().toString()).append("\r\n");
-            stringBuilder.append("商品标识：").append(productInfo.getTag()==1?"普通商品":"秒杀商品").append("\r\n");
+            BeanUtils.copyProperties(productInfo,descDTO);
+            descDTO.setTagStr(productInfo.getTag()==1?"普通商品":"秒杀商品");
 
-            stringBuilder.toString();
+            return descDTO;
         }catch (Exception e){
             logger.error(e);
         }
-        return "查询活动信息失败!";
+        return null;
     }
 
     @RequestMapping(value = {"/startActivity"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
@@ -190,6 +202,15 @@ public class MockController {
 
     }
 
+    @RequestMapping(value = {"/activityDesc"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    public String activityDesc() {
+        return "/activity_desc";
+    }
+
+    @RequestMapping(value = {"/productDesc"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    public String productDesc() {
+        return "/product_desc";
+    }
 
     @RequestMapping(value = {"/index"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
     public String index() {

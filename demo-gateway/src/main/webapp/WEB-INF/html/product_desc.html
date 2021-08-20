@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>商品详情</title>
+    <title>后台-商品信息</title>
     <style type="text/css">
         *{
             padding: 0;
@@ -42,18 +42,12 @@
 
 <div>
     <form action=""  method="">
-        <img border="1" src="/images/product.jpg"  width="600" height="500" id="productPictureUrl">
-        <p id="productName"></p>
-        <br>
 
-        <fieldset>
-            <legend>商品信息</legend>
-            <label for="price" id="price">价格：</label>
-<!--            <input type="text"  id="price" placeholder="998" disabled>-->
-
-            <input type="button" id="buttonE" style="margin-top: 80px;" onclick="buyNow()" value="立即购买" disabled>
-
-        </fieldset>
+        <legend style="font-color:blue">商品信息</legend><br/>
+        <label  id="productId">商品编号：</label><br/>
+        <label  id="productName">商品名称：</label><br/>
+        <label  id="productPrice">商品价格：</label><br/>
+        <label  id="tagStr">商品标识：</label><br/>
 
     </form>
 </div>
@@ -66,7 +60,7 @@
     });
 
     function initData(productId){
-       $.post("/mock/product",
+       $.post("/mock/productDescData",
           {
             'productId':productId
           },
@@ -76,44 +70,12 @@
               return;
             }
 
-            if(data.tag == 1){
-              $("#price").append(data.productPrice);
-              $("#productPictureUrl").attr("src",data.productPictureUrl);
-              $("#productName").html(data.productName);
-              return ;
-            }
-
-            queryActivity(productId);
+            $("#productId").append(data.productId);
+            $("#productName").append(data.productName);
+            $("#productPrice").append(data.productPrice);
+            $("#tagStr").append(data.tagStr);
 
           },'json');
-    }
-
-    function queryActivity(productId){
-      $.post("/activity/query",
-          {
-            'productId':productId
-          },
-          function(data,status){
-            if(!status){
-              alert("数据加载异常");
-              return;
-            }
-
-            $("#price").append(data.productPrice);
-            $("#productPictureUrl").attr("src",data.productPictureUrl);
-            $("#productName").html(data.productName);
-            if(data.isAvailable == 1){
-              $("#buttonE").removeAttr("disabled");
-              $("#buttonE").val("立即抢购");
-              $("#buttonE").attr("style","color:blue;margin-top: 80px;");
-            }
-
-          },'json');
-    }
-
-    function buyNow(){
-      var productId = getParameterByName('productId');
-      window.location.href="http://localhost:8080/settlement/page?productId="+productId;
     }
 
     function getParameterByName(name, url = window.location.href) {
