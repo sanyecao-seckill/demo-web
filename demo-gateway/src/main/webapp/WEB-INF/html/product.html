@@ -72,14 +72,36 @@
           },
           function(data,status){
             if(!status){
-              alert("数据加载异常")
+              alert("数据加载异常");
+              return;
+            }
+
+            if(data.tag == 1){
+              $("#price").append(data.productPrice);
+              $("#productPictureUrl").attr("src",data.productPictureUrl);
+              $("#productName").html(data.productName);
+              return ;
+            }
+
+            queryActivity(productId);
+
+          },'json');
+    }
+
+    function queryActivity(productId){
+      $.post("/activity/query",
+          {
+            'productId':productId
+          },
+          function(data,status){
+            if(!status){
+              alert("数据加载异常");
               return;
             }
 
             $("#price").append(data.productPrice);
             $("#productPictureUrl").attr("src",data.productPictureUrl);
             $("#productName").html(data.productName);
-
             if(data.isAvailable == 1){
               $("#buttonE").removeAttr("disabled");
               $("#buttonE").val("立即抢购");
@@ -91,7 +113,7 @@
 
     function buyNow(){
       var productId = getParameterByName('productId');
-      window.location.href="http://localhost:8080/settlement?productId="+productId;
+      window.location.href="http://localhost:8080/settlement/page?productId="+productId;
     }
 
     function getParameterByName(name, url = window.location.href) {

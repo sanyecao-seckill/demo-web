@@ -61,9 +61,9 @@ public class SettlementController {
      * 提交订单
      * @return
      */
-    @RequestMapping(value = {"/submitOrder"}, method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value = {"/submitData"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public SettlementSubmitDTO submitOrder(SettlementOrderDTO requestDTO){
+    public SettlementSubmitDTO submitData(SettlementOrderDTO requestDTO){
         SettlementSubmitDTO responseDTO = new SettlementSubmitDTO();
         responseDTO.setCode("000000");
 

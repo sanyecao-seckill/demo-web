@@ -2,12 +2,11 @@ package com.demo.model;
 
 import java.io.Serializable;
 
-public class ProductDetailDTO implements Serializable {
+public class ActivityDetailDTO implements Serializable {
 
     private String productName;
     private String productPrice;
     private String productPictureUrl;
-    private Integer tag;
     private Integer isAvailable;
 
 
@@ -41,13 +40,5 @@ public class ProductDetailDTO implements Serializable {
 
     public void setIsAvailable(Integer isAvailable) {
         this.isAvailable = isAvailable;
-    }
-
-    public Integer getTag() {
-        return tag;
-    }
-
-    public void setTag(Integer tag) {
-        this.tag = tag;
     }
 }

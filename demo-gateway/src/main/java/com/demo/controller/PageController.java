@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping( "/" )
+@RequestMapping( "/settlement" )
 public class PageController {
 
     Logger logger = LogManager.getLogger(PageController.class);
@@ -19,18 +19,8 @@ public class PageController {
         return "seckill web is success!";
     }
 
-    @RequestMapping(value = {"/index"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
-    public String index() {
-        return "/product";
-    }
-
-    @RequestMapping(value = {"/payPage"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
-    public String payPage() {
-        return "/payment";
-    }
-
-    @RequestMapping(value = {"/settlement"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
-    public String settlement() {
+    @RequestMapping(value = {"/page"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+    public String page() {
         return "/settlement";
     }
 

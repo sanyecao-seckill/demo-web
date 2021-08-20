@@ -134,7 +134,7 @@
       var buyNum = $("#buyNum").val();
       var address = $("#address").val();
       var payType=$("[name='payType']").filter(":checked").attr("value");
-      $.post("/settlement/submitOrder",
+      $.post("/settlement/submitData",
           {
             'productId':productId,
             'buyNum':buyNum,
