@@ -78,6 +78,7 @@
             <input type="button" name="" style="margin-top: 60px;color:blue;" onclick="submitOrder()" value="提交订单">
 
             <input type="hidden" id="limitNum" value="1">
+            <input type="hidden" id="st" value="">
         </fieldset>
 
     </form>
@@ -87,7 +88,8 @@
 
     $(document).ready(function(){
       var productId = getParameterByName('productId');
-      initData(productId,'1');
+      var st = getParameterByName('st');
+      initData(productId,'1',st);
     });
 
     $("#buyNum").bind('input propertychange', function() {
@@ -106,13 +108,13 @@
         initData(productId,$("#buyNum").val());
     });
 
-    function initData(productId,buyNum){
-       $.post("/settlement/initData",
+    function initData(productId,buyNum,st){
+       var url = "/settlement/initData?st="+st+"&productId="+productId
+       $.post(url,
           {
-            'productId':productId,
             'buyNum':buyNum
           },
-          function(data,status){
+          function(data,status,xhr){
             if(!status){
               alert("数据加载异常")
               return;
@@ -126,6 +128,8 @@
             $("#limitNum").val(data.limitNum);
             $("#mark").html('注意：本商品单次限购'+data.limitNum+'件');
 
+            $("#st").val(xhr.getResponseHeader('st'));
+
           },'json');
     }
 
@@ -134,9 +138,8 @@
       var buyNum = $("#buyNum").val();
       var address = $("#address").val();
       var payType=$("[name='payType']").filter(":checked").attr("value");
-      $.post("/settlement/submitData",
+      $.post("/settlement/submitData?productId="+productId+"&st="+$("#st").val(),
           {
-            'productId':productId,
             'buyNum':buyNum,
             'address':address,
             'payType':payType

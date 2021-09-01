@@ -53,6 +53,8 @@
 
             <input type="button" id="buttonE" style="margin-top: 80px;" onclick="buyNow()" value="立即购买" disabled>
 
+            <input type="hidden" id="st" value="">
+
         </fieldset>
 
     </form>
@@ -89,31 +91,35 @@
     }
 
     function queryActivity(productId){
-      $.post("http://localhost:7081/activity/query",
-          {
-            'productId':productId
-          },
-          function(data,status){
-            if(!status){
-              alert("数据加载异常");
-              return;
-            }
 
-            $("#price").append(data.productPrice);
-            $("#productPictureUrl").attr("src",data.productPictureUrl);
-            $("#productName").html(data.productName);
-            if(data.isAvailable == 1){
-              $("#buttonE").removeAttr("disabled");
-              $("#buttonE").val("立即抢购");
-              $("#buttonE").attr("style","color:blue;margin-top: 80px;");
-            }
+         $.ajax({
+            url: "http://localhost:7081/activity/query?productId="+productId,
+            method: "post",
+            xhrFields: { withCredentials: true }
+         }).done(function(data,status,xhr) {
+             if(!status){
+                  alert("数据加载异常");
+                  return;
+                }
+                $("#price").append(data.productPrice);
+                $("#productPictureUrl").attr("src",data.productPictureUrl);
+                $("#productName").html(data.productName);
+                if(data.isAvailable == 1){
+                  $("#buttonE").removeAttr("disabled");
+                  $("#buttonE").val("立即抢购");
+                  $("#buttonE").attr("style","color:blue;margin-top: 80px;");
+                }
+                $("#st").val(xhr.getResponseHeader('st'));
+         })
+        .fail(function (x) {
+            alert("系统异常啦");
+        });
 
-          },'json');
     }
 
     function buyNow(){
       var productId = getParameterByName('productId');
-      window.location.href="http://localhost:7081/settlement/page?productId="+productId;
+      window.location.href="http://localhost:7081/settlement/prePage?productId="+productId+"&st="+$("#st").val();
     }
 
     function getParameterByName(name, url = window.location.href) {

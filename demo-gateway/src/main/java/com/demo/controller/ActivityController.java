@@ -1,15 +1,9 @@
 package com.demo.controller;
 
-import com.demo.exception.BizException;
 import com.demo.model.ActivityDetailDTO;
-import com.demo.model.ProductDetailDTO;
-import com.demo.support.constant.ResultCodeConstant;
-import com.demo.support.dto.ProductInfoDTO;
 import com.demo.support.dto.Result;
 import com.demo.support.dto.SeckillActivityDTO;
-import com.demo.service.SeckillActivityService;
 import com.demo.support.export.ActivityExportService;
-import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Date;
 
 @Controller
-@CrossOrigin
 @RequestMapping( "/activity" )
 public class ActivityController {
-
-    @Autowired
-    SeckillActivityService seckillActivityService;
 
     @Autowired
     ActivityExportService activityExportService;
@@ -39,6 +29,7 @@ public class ActivityController {
      * 查询活动信息
      * @return
      */
+    @CrossOrigin
     @RequestMapping(value = {"/query"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public ActivityDetailDTO query(String productId) {
