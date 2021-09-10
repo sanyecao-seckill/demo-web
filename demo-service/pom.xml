@@ -39,6 +39,12 @@
             <groupId>com.demo</groupId>
             <artifactId>demo-support-export</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.demo</groupId>
             <artifactId>demo-common</artifactId>

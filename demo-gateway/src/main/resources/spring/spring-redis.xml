@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 对象资源池初始化配置  -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${redis.pool.maxIdle}" />
+        <property name="minIdle" value="${redis.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+        <property name="testOnReturn" value="${redis.pool.testOnReturn}" />
+        <property name="testWhileIdle" value="${redis.pool.testWhileIdle}" />
+        <property name="numTestsPerEvictionRun" value="${redis.pool.numTestsPerEvictionRun}" />
+        <property name="timeBetweenEvictionRunsMillis" value="${redis.pool.timeBetweenEvictionRunsMillis}" />
+    </bean>
+
+    <!-- redis 单机资源池 -->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" scope="singleton"  lazy-init="true" >
+        <constructor-arg  index="0"  ref="jedisPoolConfig" />
+        <constructor-arg  index="1"  value="${redis.ip}" type="java.lang.String"/>
+        <constructor-arg  index="2"  value="${redis.port}" type="int" />
+        <!--单位秒 当客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能  查看方式：客户端> config get timeout-->
+        <constructor-arg  index="3"  value="${redis.timeout}" type="int" />
+    </bean>
+
+</beans>
