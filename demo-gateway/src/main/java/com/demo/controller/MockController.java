@@ -9,7 +9,6 @@ import com.demo.support.dto.Result;
 import com.demo.support.dto.SeckillActivityDTO;
 import com.demo.support.export.ActivityExportService;
 import com.demo.support.export.ProductExportService;
-import com.demo.tools.RedisTools;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,8 +34,8 @@ public class MockController {
     @Autowired
     ActivityExportService activityExportService;
 
-    @Autowired
-    RedisTools redisTools;
+//    @Autowired
+//    RedisTools redisTools;
 
     Logger logger = LogManager.getLogger(MockController.class);
 
@@ -227,23 +226,23 @@ public class MockController {
     }
 
 
-    @RequestMapping(value = {"/redis/LoadStore"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
-    @ResponseBody
-    public String LoadStore(String productId,String storeNum) {
-        redisTools.set(productId,storeNum);
-        return "成功";
-    }
-
-    @RequestMapping(value = {"/redis/queryStore"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
-    @ResponseBody
-    public String queryStore(String productId) {
-        return redisTools.get(productId);
-    }
-
-    @RequestMapping(value = {"/redis/eval"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
-    @ResponseBody
-    public String redisEval(String productId,String buyNum) {
-        return redisTools.eval(productId,buyNum);
-    }
+//    @RequestMapping(value = {"/redis/LoadStore"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+//    @ResponseBody
+//    public String LoadStore(String productId,String storeNum) {
+//        redisTools.set(productId,storeNum);
+//        return "成功";
+//    }
+//
+//    @RequestMapping(value = {"/redis/queryStore"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+//    @ResponseBody
+//    public String queryStore(String productId) {
+//        return redisTools.get(productId);
+//    }
+//
+//    @RequestMapping(value = {"/redis/eval"}, method = {RequestMethod.POST,RequestMethod.GET} , produces = "text/html;charset=UTF-8")
+//    @ResponseBody
+//    public String redisEval(String productId,String buyNum) {
+//        return redisTools.eval(productId,buyNum);
+//    }
 
 }

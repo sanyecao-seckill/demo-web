@@ -24,6 +24,23 @@ public class ActivityController {
 
     Logger logger = LogManager.getLogger(ActivityController.class);
 
+    /**
+     * 查询活动库存
+     * @return
+     */
+    @CrossOrigin
+    @RequestMapping(value = {"/queryStore"}, method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Integer queryStore(String productId) {
+        try{
+            Result<Integer> result = activityExportService.queryStore(productId);
+            return result.getData();
+        }catch (Exception e){
+            logger.error("query activity store exception:",e);
+            return null;
+        }
+    }
+
 
     /**
      * 查询活动信息

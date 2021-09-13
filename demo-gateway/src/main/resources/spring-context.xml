@@ -19,6 +19,6 @@
     </bean>
 
     <import resource="spring/spring-consumer.xml"/>
-    <import resource="spring/spring-redis.xml"/>
+<!--    <import resource="spring/spring-redis.xml"/>-->
 
 </beans>
