@@ -64,6 +64,13 @@ public class SettlementController {
     @RequestMapping(value = {"/submitData"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public SettlementSubmitDTO submitData(SettlementOrderDTO requestDTO){
+
+        //mock数据
+        requestDTO.setBuyNum(2);
+        requestDTO.setAddress("jskjdkf");
+        requestDTO.setPayType(1);
+
+
         SettlementSubmitDTO responseDTO = new SettlementSubmitDTO();
         responseDTO.setCode("000000");
 

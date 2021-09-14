@@ -100,31 +100,31 @@ public class SettlementServiceImpl implements SettlementService {
 
     @Override
     public SettlementSubmitDTO submitOrder(SettlementOrderDTO requestDTO) throws BizException {
-        //1.校验活动相关的有效性
-        Result<SeckillActivityDTO> activityResult = activityExportService.queryActivity(requestDTO.getProductId());
-        logger.info("结算页提单-查询活动出参：" + JSON.toJSONString(activityResult));
-        if(activityResult == null){
-            throw new BizException("系统异常");
-        }
-        if(!StringUtils.endsWithIgnoreCase(activityResult.getCode(), ResultCodeConstant.SUCCESS)){
-            throw new BizException(activityResult.getMessage());
-        }
-        SeckillActivityDTO activityDTO = activityResult.getData();
-
-        Integer buyNum = requestDTO.getBuyNum();
-        //1.1校验单次限购
-        if(buyNum>activityDTO.getLimitNum()){
-            throw new BizException("超过了单次限购数量");
-        }
-        //1.2校验库存
-        if(buyNum>activityDTO.getStockNum()){
-            throw new BizException("商品已售完");
-        }
-        //1.3校验活动有效期
-        Date nowDate = new Date();
-        if(nowDate.before(activityDTO.getActivityStart()) || nowDate.after(activityDTO.getActivityEnd())){
-            throw new BizException("不在活动有效期");
-        }
+//        //1.校验活动相关的有效性
+//        Result<SeckillActivityDTO> activityResult = activityExportService.queryActivity(requestDTO.getProductId());
+//        logger.info("结算页提单-查询活动出参：" + JSON.toJSONString(activityResult));
+//        if(activityResult == null){
+//            throw new BizException("系统异常");
+//        }
+//        if(!StringUtils.endsWithIgnoreCase(activityResult.getCode(), ResultCodeConstant.SUCCESS)){
+//            throw new BizException(activityResult.getMessage());
+//        }
+//        SeckillActivityDTO activityDTO = activityResult.getData();
+//
+//        Integer buyNum = requestDTO.getBuyNum();
+//        //1.1校验单次限购
+//        if(buyNum>activityDTO.getLimitNum()){
+//            throw new BizException("超过了单次限购数量");
+//        }
+//        //1.2校验库存
+//        if(buyNum>activityDTO.getStockNum()){
+//            throw new BizException("商品已售完");
+//        }
+//        //1.3校验活动有效期
+//        Date nowDate = new Date();
+//        if(nowDate.before(activityDTO.getActivityStart()) || nowDate.after(activityDTO.getActivityEnd())){
+//            throw new BizException("不在活动有效期");
+//        }
 
         //2.风控
 
@@ -136,6 +136,9 @@ public class SettlementServiceImpl implements SettlementService {
         }
         if(!StringUtils.endsWithIgnoreCase(orderResult.getCode(), ResultCodeConstant.SUCCESS)){
             throw new BizException(orderResult.getMessage());
+        }
+        if(StringUtils.isEmpty(orderResult.getData())){
+            throw new BizException("抢购失败");
         }
 
         //4.根据订单号获取支付URL
