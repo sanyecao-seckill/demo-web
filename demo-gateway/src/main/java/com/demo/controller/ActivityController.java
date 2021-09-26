@@ -47,9 +47,9 @@ public class ActivityController {
      * @return
      */
     @CrossOrigin
-    @RequestMapping(value = {"/query"}, method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value = {"/subQuery"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public ActivityDetailDTO query(String productId) {
+    public ActivityDetailDTO subQuery(String productId) {
 
         ActivityDetailDTO detailDTO = new ActivityDetailDTO();
 
