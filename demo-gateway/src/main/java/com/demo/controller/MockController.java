@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -184,7 +185,7 @@ public class MockController {
      */
     @RequestMapping(value = {"/product"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public ProductDetailDTO product(String productId) {
+    public ProductDetailDTO product(String productId, HttpServletRequest request) {
 
         Result<ProductInfoDTO> productInfoDTOResult = productExportService.queryProduct(productId);
 
@@ -244,5 +245,21 @@ public class MockController {
 //    public String redisEval(String productId,String buyNum) {
 //        return redisTools.eval(productId,buyNum);
 //    }
+
+    /**
+     * 测试请求头
+     * @return
+     */
+    @RequestMapping(value = {"/testHeader"}, method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public void testHeader(HttpServletRequest request) {
+        try{
+            Thread.sleep(3000L);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        logger.error("测试http header:"+request.getHeader("Connection"));
+        logger.error("测试http header:"+request.getHeader("X-Real-IP"));
+    }
 
 }
