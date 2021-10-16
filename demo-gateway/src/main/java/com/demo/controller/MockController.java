@@ -246,20 +246,4 @@ public class MockController {
 //        return redisTools.eval(productId,buyNum);
 //    }
 
-    /**
-     * 测试请求头
-     * @return
-     */
-    @RequestMapping(value = {"/testHeader"}, method = {RequestMethod.POST,RequestMethod.GET})
-    @ResponseBody
-    public void testHeader(HttpServletRequest request) {
-        try{
-            Thread.sleep(3000L);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        logger.error("测试http header:"+request.getHeader("Connection"));
-        logger.error("测试http header:"+request.getHeader("X-Real-IP"));
-    }
-
 }

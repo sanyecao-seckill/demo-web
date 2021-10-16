@@ -101,6 +101,9 @@
                   alert("数据加载异常");
                   return;
                 }
+                if(typeof data == 'string'){
+                   data = JSON.parse(data)
+                }
                 $("#price").append(data.productPrice);
                 $("#productPictureUrl").attr("src",data.productPictureUrl);
                 $("#productName").html(data.productName);
