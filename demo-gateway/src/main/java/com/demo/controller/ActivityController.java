@@ -1,5 +1,6 @@
 package com.demo.controller;
 
+import com.demo.cache.ILocalCache;
 import com.demo.model.ActivityDetailDTO;
 import com.demo.support.dto.Result;
 import com.demo.support.dto.SeckillActivityDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 @Controller
@@ -21,6 +23,9 @@ public class ActivityController {
 
     @Autowired
     ActivityExportService activityExportService;
+
+    @Resource(name = "activityLocalCache")
+    ILocalCache iLocalCache;
 
     Logger logger = LogManager.getLogger(ActivityController.class);
 
@@ -53,12 +58,11 @@ public class ActivityController {
 
         ActivityDetailDTO detailDTO = new ActivityDetailDTO();
 
-        //标识  1：正常商品，2：秒杀商品 3：预约商品
-        Result<SeckillActivityDTO> activityDTOResult = activityExportService.queryActivity(productId);
-        if(activityDTOResult == null || activityDTOResult.getData() == null){
+        SeckillActivityDTO activityDTO = (SeckillActivityDTO)iLocalCache.get(productId);
+        if(activityDTO == null){
             return null;
         }
-        SeckillActivityDTO activityDTO = activityDTOResult.getData();
+
         detailDTO.setProductPrice(activityDTO.getActivityPrice().toPlainString());
         detailDTO.setProductPictureUrl(activityDTO.getActivityPictureUrl());
         detailDTO.setProductName(activityDTO.getActivityName());
