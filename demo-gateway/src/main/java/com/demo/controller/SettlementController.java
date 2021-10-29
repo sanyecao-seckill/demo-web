@@ -2,12 +2,14 @@ package com.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.demo.exception.BizException;
+import com.demo.limit.RateLimiterComponent;
 import com.demo.model.SettlementInitDTO;
 import com.demo.model.SettlementSubmitDTO;
 import com.demo.service.SettlementService;
 import com.demo.support.dto.SettlementOrderDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,9 @@ public class SettlementController {
     @Autowired
     SettlementService settlementService;
 
+    @Autowired
+    RateLimiterComponent rateLimiterComponent;
+
     Logger logger = LogManager.getLogger(SettlementController.class);
 
     /**
@@ -34,6 +39,11 @@ public class SettlementController {
     public SettlementInitDTO initData(String productId,String buyNum, HttpServletRequest request) {
 
         logger.info("结算页初始化入参productId:"+productId+" ;buyNum="+buyNum);
+
+        //判断是否被限流
+        if(rateLimiterComponent.isLimitedByInit()){
+            return null;
+        }
 
         SettlementInitDTO initDTO = null;
         try {
@@ -53,8 +63,13 @@ public class SettlementController {
     @RequestMapping(value = {"/dependency"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public String dependency() {
-
-        return "create seckill activity fail!";
+        //判断是否被限流
+        if(rateLimiterComponent.isLimitedByInit()){
+            logger.info("我被限流了！");
+            return "is limited";
+        }
+        logger.info("我通过了！");
+        return "success!!!";
     }
 
     /**
@@ -64,6 +79,11 @@ public class SettlementController {
     @RequestMapping(value = {"/submitData"}, method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public SettlementSubmitDTO submitData(SettlementOrderDTO requestDTO){
+
+        //判断是否被限流
+        if(rateLimiterComponent.isLimitedBySubmit()){
+            return null;
+        }
 
         //mock数据
         requestDTO.setBuyNum(2);
